@@ -32,6 +32,7 @@ void find_correspondences(struct sm_params*params) {
 	const LDP laser_ref  = params->laser_ref;
 	const LDP laser_sens = params->laser_sens;
 
+        double max_line_dist2 = square(params->max_line_dist);
 	int i;
 	for(i=0;i<laser_sens->nrays;i++) {
 		if(!ld_valid_ray(laser_sens,i)) {
@@ -90,6 +91,13 @@ void find_correspondences(struct sm_params*params) {
 			double dist_up   = distance_squared_d(p_i_w, laser_ref->points[j2up  ].p);
 			double dist_down = distance_squared_d(p_i_w, laser_ref->points[j2down].p);
 			j2 = dist_up < dist_down ? j2up : j2down;
+		}
+
+		if(params->use_point_to_line_distance
+			&& distance_squared_d(laser_ref->points[j1].p, laser_ref->points[j2].p) > max_line_dist2)
+		{
+			ld_set_null_correspondence(laser_sens, i);
+			continue;
 		}
 		
 		ld_set_correspondence(laser_sens, i, j1, j2);

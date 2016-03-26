@@ -42,7 +42,7 @@ void visibilityTest(LDP laser_ref, const gsl_vector*u) {
 	Modifies: laser_sens->corr
  */
 void kill_outliers_double(struct sm_params*params) {
-	double threshold = 3; /* TODO: add as configurable */
+	double threshold = params->outliers_doubles_threshold;
 
 	LDP laser_ref  = params->laser_ref;
 	LDP laser_sens = params->laser_sens;

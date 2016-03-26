@@ -59,6 +59,7 @@ void find_correspondences_tricks(struct sm_params*params) {
 	/* Handy constant */
 	double C1 =  (double)laser_ref->nrays / (laser_ref->max_theta-laser_ref->min_theta) ;
 	double max_correspondence_dist2 = square(params->max_correspondence_dist);
+        double max_line_dist2 = square(params->max_line_dist);
 	/* Last match */
 	int last_best = -1;
 	const point2d * restrict points_w = laser_sens->points_w;
@@ -217,9 +218,14 @@ void find_correspondences_tricks(struct sm_params*params) {
 
 		last_best = j1;
 		
-		laser_sens->corr[i].valid = 1;
-		laser_sens->corr[i].j1 = j1;
-		laser_sens->corr[i].j2 = j2;
+		if(params->use_point_to_line_distance
+                   && distance_squared_d(laser_ref->points[j1].p, laser_ref->points[j2].p) > max_line_dist2)
+		{
+			ld_set_null_correspondence(laser_sens, i);
+			continue;
+		}
+
+		ld_set_correspondence(laser_sens, i, j1, j2);
 		laser_sens->corr[i].dist2_j1 = best_dist;
 		laser_sens->corr[i].type = 
 			params->use_point_to_line_distance ? correspondence::corr_pl : correspondence::corr_pp;

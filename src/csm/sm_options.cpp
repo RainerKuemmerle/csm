@@ -62,6 +62,9 @@ void sm_options(struct sm_params*p, struct option*ops) {
 		&(p->use_point_to_line_distance),  1,
 		"If 0, it's vanilla ICP.");
 
+	options_double(ops, "Maximum distance between the line endpoints in the reference scan.",
+		&(p->max_line_dist), 2.0, "");
+
 	options_int(ops, "do_alpha_test",
 		&(p->do_alpha_test),  0,
 		"Discard correspondences based on the angles");
@@ -84,6 +87,9 @@ void sm_options(struct sm_params*p, struct option*ops) {
 	options_int(ops, "outliers_remove_doubles", 
 		&(p->outliers_remove_doubles), 1, "no two points in laser_sens can have the same corr."); 
 
+	options_double(ops, "outliers_doubles_threshold",
+		&(p->outliers_doubles_threshold), 3.0, "remove double correspondences only, if they are this much worse than the best candidate.");
+
 	options_int(ops, "do_compute_covariance", 
 		&(p->do_compute_covariance), 0,
 		"If 1, computes the covariance of ICP using the method http://purl.org/censi/2006/icpcov .");
@@ -91,12 +97,6 @@ void sm_options(struct sm_params*p, struct option*ops) {
 	options_int(ops, "debug_verify_tricks", 
 		&(p->debug_verify_tricks), 0,
 		"Checks that find_correspondences_tricks gives the right answer.");
-
-	/*options_double(ops, "gpm_theta_bin_size_deg", &(p->gpm_theta_bin_size_deg), 5.0, */
-		/*"GPM: Dimension of bins for finding first theta.");*/
-	/*options_double(ops, "gpm_extend_range_deg", &(p->gpm_extend_range_deg), 15.0, */
-		/*"GPM: Area around maximum.");*/
-	/*options_int(ops, "gpm_interval", &(p->gpm_interval), 1, "Interval of points to consider (1: all points, 2: every other point, etc.)");*/
 
 	options_double(ops, "laser_x", &(p->laser[0]), 0.0, "laser.x (m)");
 	options_double(ops, "laser_y", &(p->laser[1]), 0.0, "laser.y (m)");
@@ -110,7 +110,4 @@ void sm_options(struct sm_params*p, struct option*ops) {
 
 	options_int(ops, "use_sigma_weights", &(p->use_sigma_weights), 0,
 		"If 1, the field 'readings_sigma' in the second scan is used to weight the correspondence by 1/sigma^2");
-		
-
-	/*hsm_add_options(ops, &p->hsm);*/
 }

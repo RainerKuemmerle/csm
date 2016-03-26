@@ -31,6 +31,9 @@ struct sm_params {
 	
 	/** Maximum distance for a correspondence to be valid */
 	double max_correspondence_dist;
+	/** Maximum distance between the line endpoints in the reference scan. */
+	double max_line_dist;
+
 	/** Use smart tricks for finding correspondences. Only influences speed; not convergence. */
 	int use_corr_tricks;
 	
@@ -67,6 +70,8 @@ struct sm_params {
 	/** Do not allow two different correspondences to share a point */
 	int outliers_remove_doubles; 
 
+		/** remove double correspondences only, if they are this much worse than the best candidate. */
+	double outliers_doubles_threshold; /* 3 */
 
 	
 	/* Functions that compute and use point orientation for defining matches. */
