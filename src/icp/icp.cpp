@@ -148,6 +148,13 @@ void sm_icp(struct sm_params*params, struct sm_result*res) {
 				find_correspondences_tricks(params);
 			else
 				find_correspondences(params);
+
+			/* perform outlier removal */
+			if(params->outliers_remove_doubles)
+				kill_outliers_double(params);
+
+			double error=0;
+			kill_outliers_trim(params, &error);
 		}
 	
 		if(params->do_compute_covariance)  {
